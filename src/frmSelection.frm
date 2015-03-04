@@ -13,6 +13,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+
 Private Sub cboDMonthEnd_Change()
     cboDDayEnd.RowSource = selectMonthToDay(cboDMonthEnd.Value, cboDYearEnd.Value)
     cboDDayEnd.ListIndex = 0
@@ -57,7 +58,7 @@ Private Sub cmdDayGet_Click()
     'MsgBox DateDiff("d", Format(startDate, "yyyy/mm/dd"), Format(endDate, "yyyy/mm/dd"))
     If DateDiff("d", startDate, endDate) >= 0 Then
         ' call the date method
-        GetData Format(startDate, "mm/dd/yyyy"), Format(endDate, "mm/dd/yyyy")
+        GetData Format(startDate, "yyyy-mm-dd") & " 00:00", Format(endDate, "yyyy-mm-dd") & " 23:59"
         End
     Else
         MsgBox "Please enter date order correctly", vbCritical + vbOKOnly
@@ -66,7 +67,8 @@ End Sub
 
 Private Sub cmdMonthGet_Click()
     ' call the date method
-    GetData cboMMonth.Value & "/1/" & cboMYear.Value, cboMMonth.Value & "/" & Mid(selectMonthToDay(cboMMonth.Value, cboMYear.Value), 4, 2) & "/" & cboMYear.Value
+    GetData cboMYear.Value & "-" & cboMMonth.Value & "-01 00:00", cboMYear.Value & "-" & cboMMonth.Value & "-" & Mid(selectMonthToDay(cboMMonth.Value, cboMYear.Value), 4, 2) & " 23:59"
+    'GetData cboMMonth.Value & "/1/" & cboMYear.Value, cboMMonth.Value & "/" & Mid(selectMonthToDay(cboMMonth.Value, cboMYear.Value), 4, 2) & "/" & cboMYear.Value
     End
 End Sub
 
