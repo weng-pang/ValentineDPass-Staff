@@ -32,6 +32,8 @@ Sub CalcAtt()
     Dim interval As Integer
     Dim expected As Integer
     Dim name As String
+    Dim currentDate As String
+    
     
     Dim startingColumn As Integer
     Dim i, j, k, rowCount, overTimeRowCount, overTimeCount, cursor, cursorBegin, codeASCII, recordCount, readingRowBegins, skippedDays, runCount, holidayCount As Integer
@@ -172,7 +174,8 @@ Start:
         If recordCount = 1 Then
             ' Add the date at column
             If skippedDays = 0 Then
-                destinationSheet.Range(Chr(codeASCII) & cursor).Value = DateValue(readingSheet.Range("A" & i + readingRowBegins).Value)
+                currentDate = readingSheet.Range("A" & i + readingRowBegins).Value
+                destinationSheet.Range(Chr(codeASCII) & cursor).Value = DateValue(currentDate)
             End If
             ' switch column to C
             codeASCII = codeASCII + 1
@@ -182,12 +185,12 @@ Start:
             If cursor > cursorBegin Then ' but not for first row
             'MsgBox destinationSheet.Range(Chr(startingColumn) & cursor).Value & "," & destinationSheet.Range(Chr(startingColumn) & cursor - 1).Value
             'MsgBox DateDiff("d", destinationSheet.Range(Chr(startingColumn) & cursor).Value, destinationSheet.Range(Chr(startingColumn) & cursor - 1).Value) <> -1
-                If DateDiff("d", destinationSheet.Range(Chr(startingColumn) & cursor).Value, destinationSheet.Range(Chr(startingColumn) & cursor - 1).Value) <> -1 Then
-                skippedDays = skippedDays + 1
+            If DateDiff("d", destinationSheet.Range(Chr(startingColumn) & cursor).Value, destinationSheet.Range(Chr(startingColumn) & cursor - 1).Value) <> -1 Then
                 'MsgBox "There is a skip at row " & cursor
                 'MsgBox "The difference is " & DateDiff("d", destinationSheet.Range(Chr(startingColumn) & cursor).Value, destinationSheet.Range(Chr(startingColumn) & cursor - 1).Value)
                     destinationSheet.Range(Chr(startingColumn) & cursor).Insert Shift:=xlDown, CopyOrigin:=xlFormatFromLeftOrAbove
                     destinationSheet.Range(Chr(startingColumn) & cursor).Value = DateValue(DateAdd("d", skippedDays, readingSheet.Range("A" & i + readingRowBegins - 1).Value))
+                    skippedDays = skippedDays + 1
                     cursor = cursor + 1
                     ' go back to beginning...
                     recordCount = 1
@@ -197,6 +200,8 @@ Start:
                 Else
                     ' There is no skip, reset the skip day counter
                     skippedDays = 0
+                    overNight = False ' reset overnight count
+                    
                 End If
             End If
         End If
@@ -300,7 +305,7 @@ Ending:
         ' the worktime sum ups
         destinationSheet.Range(Chr(codeASCII) & cursor).Formula = "=SUM(" & Chr(codeASCII) & cursorBegin & ":" & Chr(codeASCII) & cursor - 1 & ")"
         destinationSheet.Range(Chr(codeASCII - 1) & cursor).Formula = "=SUM(" & Chr(codeASCII - 1) & cursorBegin & ":" & Chr(codeASCII - 1) & cursor - 1 & ")"
-        destinationSheet.Range(Chr(codeASCII - 2) & cursor).Formula = "=SUM(" & Chr(codeASCII - 2) & cursorBegin & ":" & Chr(codeASCII - 1) & cursor - 2 & ")"
+        destinationSheet.Range(Chr(codeASCII - 2) & cursor).Formula = "=SUM(" & Chr(codeASCII - 2) & cursorBegin & ":" & Chr(codeASCII - 2) & cursor - 1 & ")"
         ' convert to the hours
         destinationSheet.Range(Chr(codeASCII) & cursor + 1).Formula = "=(" & Chr(codeASCII) & cursor & "/60)"
         destinationSheet.Range(Chr(codeASCII - 1) & cursor + 1).Formula = "=(" & Chr(codeASCII - 1) & cursor & "/60)"
