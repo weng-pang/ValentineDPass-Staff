@@ -60,22 +60,7 @@ Sub GetData(startDate As String, endDate As String)
     Path = (shtSettings.Range("B" & settingParameter.Row).Value)
     Set settingParameter = shtSettings.Range("A2:A100").Find(what:="Id", After:=shtSettings.Range("A2:A100").Cells(1, 1), LookIn:=xlValues, LookAt:=xlWhole, searchorder:=xlByRows, SearchDirection:=xlPrevious, MatchCase:=False)
     id = (shtSettings.Range("B" & settingParameter.Row).Value)
-   ' Connection Settings
-  'ConnectString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" & Path & "; Persist Security Info=False;Jet OLEDB:Database Locking Mode=0;"
-   
-   'SQLQuery = "SELECT  checktime, checktype, sensorid ,u.badgenumber " & _
-            "FROM userinfo u, checkinout c " & _
-            "WHERE c.userid = u.userid " & _
-            "AND u.badgenumber ='" & id & "' " & _
-            "AND checktime >= #" & startDate & "# AND checktime <= #" & endDate & "#;"
-    ' Date format: MM/DD/YYYY
-   ' Initiate Connections
-   'Set Db = New ADODB.Connection
-   'Set Rs = New ADODB.Recordset
-   
-   'Db.Open ConnectString
-   
-   'Rs.Open SQLQuery, Db
+
    '====================================
 ' For Retrieving Information from DPASS server
     Dim dpassClient As New RestClient
